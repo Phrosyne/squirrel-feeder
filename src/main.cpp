@@ -2,6 +2,7 @@
 #include "esp_wpa2.h"
 #include "HTTPClient.h"
 #include "ArduinoJson.h"
+#include "FirebaseClient.h"
 
 #include "hush.h"
 
