@@ -13,7 +13,9 @@ SSL_CLIENT ssl_client;
 using AsyncClient = AsyncClientClass;
 AsyncClient aClient(ssl_client);
 
-UserAuth user_auth(API_KEY, USER_EMAIL, USER_PASSWORD, 3000);
+
+
+UserAuth user_auth(API_KEY, user, pass, 3000);
 FirebaseApp app;
 
 Firestore::Documents Docs;
@@ -27,17 +29,18 @@ void setup()
   Serial.print("Connecting");
 
   WiFi.disconnect(true); // Disconnect from any previous networks
-  WiFi.mode(WIFI_STA);
+  // WiFi.mode(WIFI_STA);
 
-  // Configure WPA2 Enterprise Enterprise Identity and Password
-  esp_wifi_sta_wpa2_ent_set_identity((uint8_t *)id, strlen(id));
-  esp_wifi_sta_wpa2_ent_set_username((uint8_t *)id, strlen(id));
-  esp_wifi_sta_wpa2_ent_set_password((uint8_t *)password, strlen(password));
+  // // Configure WPA2 Enterprise Enterprise Identity and Password
+  // esp_wifi_sta_wpa2_ent_set_identity((uint8_t *)id, strlen(id));
+  // esp_wifi_sta_wpa2_ent_set_username((uint8_t *)id, strlen(id));
+  // esp_wifi_sta_wpa2_ent_set_password((uint8_t *)password, strlen(password));
 
-  // Enable WPA2 Enterprise
-  esp_wifi_sta_wpa2_ent_enable();
+  // // Enable WPA2 Enterprise
+  // esp_wifi_sta_wpa2_ent_enable();
 
-  WiFi.begin(ssid);
+  // WiFi.begin(ssid);
+  WiFi.begin("NETGEAR10", "tinyunit573");
 
   while (WiFi.status() != WL_CONNECTED)
   {
@@ -64,25 +67,27 @@ void setup()
   Serial.println("Signed in!!");
   Serial.println(app.getToken());
 
-
-  double placeholder;
+  int weight = 80085;
 
   Document<Values::Value> doc;
-  doc.add("current_weight", Values::Value( placeholder )); // replace
-  doc.add("last_updated", Values::Value(String(millis())));
+  doc.add("foodLevel", Values::Value(Values::IntegerValue(weight))); // replace
+  // doc.add("last_updated", Values::Value(Values::StringValue(String(millis()))));
 
-  PatchDocumentOptions patchOptions(DocumentMask("current_weight,last_updated"), DocumentMask(), Precondition());
+  PatchDocumentOptions patchOptions(DocumentMask("foodLevel"), DocumentMask(), Precondition());
 
   Serial.println("Patching document...");
-  String documentPath = "scales/device_001"; // collection/document
+  String documentPath = "food/arbor"; // collection/document
 
-  bool success = Docs.patch(aClient, Firestore::Parent(FIREBASE_PROJECT_ID), documentPath, patchOptions, doc);
+  
+  bool success = Docs.patch(aClient, Firestore::Parent(FIREBASE_PROJECT_ID, "(default)"), documentPath, patchOptions, doc);
 
-  if (success || ms - millis() > 10000) {
+  if (success) {
     Serial.println(success ? "Doc patched" : "Timeout");
-    uint64_t sleep_duration = 1000000;
-    esp_sleep_enable_timer_wakeup(sleep_duration);
-    esp_deep_sleep_start();
+    Serial.flush();
+
+    // uint64_t sleep_duration = 1000000;
+    // esp_sleep_enable_timer_wakeup(sleep_duration);
+    // esp_deep_sleep_start();
   }
 
 
