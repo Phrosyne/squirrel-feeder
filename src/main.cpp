@@ -29,18 +29,17 @@ void setup()
   Serial.print("Connecting");
 
   WiFi.disconnect(true); // Disconnect from any previous networks
-  // WiFi.mode(WIFI_STA);
+  WiFi.mode(WIFI_STA);
 
-  // // Configure WPA2 Enterprise Enterprise Identity and Password
-  // esp_wifi_sta_wpa2_ent_set_identity((uint8_t *)id, strlen(id));
-  // esp_wifi_sta_wpa2_ent_set_username((uint8_t *)id, strlen(id));
-  // esp_wifi_sta_wpa2_ent_set_password((uint8_t *)password, strlen(password));
+  // Configure WPA2 Enterprise Enterprise Identity and Password
+  esp_wifi_sta_wpa2_ent_set_identity((uint8_t *)id, strlen(id));
+  esp_wifi_sta_wpa2_ent_set_username((uint8_t *)id, strlen(id));
+  esp_wifi_sta_wpa2_ent_set_password((uint8_t *)password, strlen(password));
 
-  // // Enable WPA2 Enterprise
-  // esp_wifi_sta_wpa2_ent_enable();
+  // Enable WPA2 Enterprise
+  esp_wifi_sta_wpa2_ent_enable();
 
-  // WiFi.begin(ssid);
-  WiFi.begin("NETGEAR10", "tinyunit573");
+  WiFi.begin(ssid);
 
   while (WiFi.status() != WL_CONNECTED)
   {
